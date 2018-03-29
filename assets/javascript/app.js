@@ -4,6 +4,7 @@
 // build in logic for if dealer gets 5 cards, dealer wins
 // build logic for Aces to be 1 point or 11
 // build logic for player win message on getting dealt 21
+// Make a "play again?" button
 
 // Card variables
 var suits = ["Hearts", "Clubs", "Diamonds", "Spades"];
