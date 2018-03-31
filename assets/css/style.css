@@ -1,3 +1,13 @@
+body {
+  background-image: url(../images/bg.jpg);
+  height: 100%;
+  width: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+
+}
 
 .dealer{
  height: 250px;
@@ -7,6 +17,7 @@
  align: center;
 
  border: 1px solid #fff;
+ border-radius: 255px;
  width: 900px;
  display: flex;
  justify-content: center;
@@ -16,27 +27,26 @@
  align-items: center;
  margin: 0 auto;
  margin-top: 20px;
+ margin-bottom: 250px;
 }
 
- .test {
-   height: 250px;
-
-  background-color: #323533;
-  width: 50px;
-  height: 200px;
-  text-align: center;
-  align: center;
-
-  border: 40px solid #fff;
-  width: 900px;
-  display: flex;
-  justify-content: center;
-
-  background-color: #323533;
-  flex-direction: column;
-  align-items: center;  */
-
+.player-card {
+height: 250px;
+border-radius: 255px;
+background-color: #323533;
+width: 50px;
+height: 200px;
+text-align: center;
+align: center;
+border: 20px solid #fff;
+width: 900px;
+display: flex;
+justify-content: center;
+background-color: #323533;
+flex-direction: column;
+align-items: center;  */
 }
+
 .flex-container{
   padding: 0;
   margin: 0;
@@ -51,7 +61,7 @@
 
 .menu-container {
   color: #fff;
-  background-color: #157024;
+  /* background-color: #157024; */
   padding: 20px 0;
 }
 
@@ -62,7 +72,22 @@
 
 #text-area{
   text-align: center;
+  font-size: 24px;
 }
 #new-game-button{
   text-align: center;
+}
+
+.row {
+  margin-left: -15px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-body {
+	color: black;
+}
+
+.modal-header {
+	color: black;
 }
