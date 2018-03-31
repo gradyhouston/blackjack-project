@@ -1,0 +1,68 @@
+
+.dealer{
+ height: 250px;
+ width: 50px;
+ height: 200px;
+ text-align: center;
+ align: center;
+
+ border: 1px solid #fff;
+ width: 900px;
+ display: flex;
+ justify-content: center;
+
+ background-color: #323533;
+ flex-direction: column;
+ align-items: center;
+ margin: 0 auto;
+ margin-top: 20px;
+}
+
+ .test {
+   height: 250px;
+
+  background-color: #323533;
+  width: 50px;
+  height: 200px;
+  text-align: center;
+  align: center;
+
+  border: 40px solid #fff;
+  width: 900px;
+  display: flex;
+  justify-content: center;
+
+  background-color: #323533;
+  flex-direction: column;
+  align-items: center;  */
+
+}
+.flex-container{
+  padding: 0;
+  margin: 0;
+  list-style: none; */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.menu-container {
+  color: #fff;
+  background-color: #157024;
+  padding: 20px 0;
+}
+
+.menu {
+  border: 1px solid #fff;
+  width: 900px;
+}
+
+#text-area{
+  text-align: center;
+}
+#new-game-button{
+  text-align: center;
+}
