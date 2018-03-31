@@ -1,8 +1,8 @@
 
 function createDeck() {
-    
+
     var newDeck = [];
-        
+
     for (var i = 0; i < suits.length; i++) {
         console.log('this is iteration ',i, ' of the first loop');
         for (var j = 0; j < cardNames.length; j++) {
@@ -99,7 +99,7 @@ function shuffleDeck(deck) {
   function checkForEndOfGame() {
 
     updateScores();
-  
+
     if (gameOver) {
       // Lets the dealer take cards
       while (dealerScore < playerScore
@@ -127,33 +127,36 @@ function shuffleDeck(deck) {
     }
   }
 
+  // displays the modal
+  $('#myModal').modal('show');
+
   function showStatus() {
     if (!gameStarted) {
       textArea.innerText = "Welcome to Blackjack!";
       return;
     }
-  
+
     var dealerCardString = "";
     for (var i = 0; i < dealerCards.length; i++) {
       dealerCardString += dealerCards[i].title + "\n";
     }
-  
+
     var playerCardString = "";
     for (var i = 0; i < playerCards.length; i++) {
       playerCardString += playerCards[i].title + "\n";
     }
-  
+
     updateScores();
-  
+
     textArea.innerText =
       "Dealer has:\n" +
       dealerCardString +
       "(score: " + dealerScore + ")\n\n" +
-  
+
       "Player has: \n" +
       playerCardString +
       "(score: " + playerScore + ")\n\n";
-  
+
       if (gameOver) {
         if (playerWon) {
           textArea.innerText += "You win!";
@@ -201,12 +204,12 @@ newGameButton.addEventListener("click", function() {
     gameStarted = true;
     gameOver = false;
     playerWon = false;
-  
+
     deck = createDeck();
     shuffleDeck(deck);
     dealerCards = [getNextCard(), getNextCard()];
     playerCards = [getNextCard(), getNextCard()];
-  
+
     newGameButton.style.display = "none";
     hitButton.style.display = "inline";
     stayButton.style.display = "inline";
@@ -219,7 +222,7 @@ newGameButton.addEventListener("click", function() {
     checkForEndOfGame();
     showStatus();
   });
-  
+
   // Click listener for Stay Button
   stayButton.addEventListener("click", function() {
     gameOver = true;
