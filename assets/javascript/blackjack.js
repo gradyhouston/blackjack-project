@@ -6,9 +6,6 @@ function createDeck() {
     for (var i = 0; i < suits.length; i++) {
         console.log('this is iteration ',i, ' of the first loop');
         for (var j = 0; j < cardNames.length; j++) {
-            console.log('this is iteration ',j, ' of the second loop');
-            console.log('card name ', cardNames[j]);
-            console.log('suit name ', suits[i]);
 
             var card = {
                 image: "",
@@ -60,18 +57,7 @@ function createDeck() {
     return(newDeck);
 }
 
-function shuffleDeck(deck) {
-    for (var i = 0; i < deck.length; i++) {
-      var shuffle = Math.trunc(Math.random() * deck.length);
-      var temp = deck[shuffle];
-      deck[shuffle] = deck[i];
-      deck[i] = temp;
-    }
-  }
 
-  function getNextCard() {
-    return deck.shift();
-  }
 
   function getScore(cardArray) {
     var score = 0;
@@ -92,7 +78,7 @@ function shuffleDeck(deck) {
   }
 
   function updateScores() {
-    dealerScore = getScore(dealerCards);
+    dealerScore = getScore(dealer.cards);
     playerScore = getScore(playerCards);
   }
 
@@ -134,8 +120,8 @@ function shuffleDeck(deck) {
     }
   
     var dealerCardString = "";
-    for (var i = 0; i < dealerCards.length; i++) {
-      dealerCardString += dealerCards[i].title + "\n";
+    for (var i = 0; i < dealer.cards.length; i++) {
+      dealerCardString += dealer.cards[i].title + "\n";
     }
   
     var playerCardString = "";
@@ -184,12 +170,46 @@ var playerThreeHand = document.getElementById("player-3");
 var gameStarted = false;
 var gameOver = false;
 var playerWon = false;
-var dealerCards = [];
+
 var playerCards = [];
-var dealerScore = 0;
 var playerScore = 0;
 var deck = [];
 var decks = [];
+
+// Initialize Firebase DB
+var config = {
+    apiKey: "AIzaSyAetl9uxbX0cwIibK_H1PUydPLuDtaZOho",
+    authDomain: "blackjack-project.firebaseapp.com",
+    databaseURL: "https://blackjack-project.firebaseio.com",
+    projectId: "blackjack-project",
+    storageBucket: "blackjack-project.appspot.com",
+    messagingSenderId: "17576552103"
+  };
+  firebase.initializeApp(config);
+
+// Database variable 
+var database = firebase.database();
+
+// Dealer Concept
+var dealer = {
+
+    score: 0,
+
+    cards: [],
+
+    shuffleDeck: function (deck) {
+        for (var i = 0; i < deck.length; i++) {
+          var shuffle = Math.trunc(Math.random() * deck.length);
+          var temp = deck[shuffle];
+          deck[shuffle] = deck[i];
+          deck[i] = temp;
+        }
+      },
+    
+    getNextCard:  function () {
+        return deck.shift();
+      }
+}
 
 hitButton.style.display = "none";
 stayButton.style.display = "none";
@@ -203,9 +223,9 @@ newGameButton.addEventListener("click", function() {
     playerWon = false;
   
     deck = createDeck();
-    shuffleDeck(deck);
-    dealerCards = [getNextCard(), getNextCard()];
-    playerCards = [getNextCard(), getNextCard()];
+    dealer.shuffleDeck(deck);
+    dealer.cards = [dealer.getNextCard(), dealer.getNextCard()];
+    playerCards = [dealer.getNextCard(), dealer.getNextCard()];
   
     newGameButton.style.display = "none";
     hitButton.style.display = "inline";
@@ -215,7 +235,7 @@ newGameButton.addEventListener("click", function() {
 
   // Click listener for Hit Button
     hitButton.addEventListener("click", function() {
-    playerCards.push(getNextCard());
+    playerCards.push(dealer.getNextCard());
     checkForEndOfGame();
     showStatus();
   });
