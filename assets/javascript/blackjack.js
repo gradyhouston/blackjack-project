@@ -113,9 +113,6 @@ function createDeck() {
     }
   }
 
-  // displays the modal
-  $('#myModal').modal('show');
-
   function showStatus() {
     if (!gameStarted) {
       textArea.innerText = "Welcome to Blackjack!";
@@ -211,8 +208,31 @@ var dealer = {
     
     getNextCard:  function () {
         return deck.shift();
-      }
+      },
+
+    dealCards: function () {
+      player.cards = [this.getNextCard(),this.getNextCard()];
+      this.cards = [this.getNextCard(), this.getNextCard()];
+    }
+
+    updateDealerScore: function () {
+
+    }
 }
+
+var player = {
+  score: 0,
+
+  cards: [],
+
+  numberOfPlayers: [],
+
+  updatePlayerScore: function () {
+
+  }
+}
+
+// Main section of code 
 
 hitButton.style.display = "none";
 stayButton.style.display = "none";
@@ -228,7 +248,7 @@ newGameButton.addEventListener("click", function() {
     deck = createDeck();
 
     dealer.shuffleDeck(deck);
-    dealer.cards = [dealer.getNextCard(), dealer.getNextCard()];
+    
     playerCards = [dealer.getNextCard(), dealer.getNextCard()];
 
     newGameButton.style.display = "none";
@@ -246,6 +266,7 @@ newGameButton.addEventListener("click", function() {
 
   // Click listener for Stay Button
   stayButton.addEventListener("click", function() {
+    dealer.updateDealerScore();
     gameOver = true;
     checkForEndOfGame();
     showStatus();
