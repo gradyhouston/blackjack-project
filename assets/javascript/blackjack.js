@@ -4,7 +4,6 @@ function createDeck() {
     var newDeck = [];
 
     for (var i = 0; i < suits.length; i++) {
-        console.log('this is iteration ',i, ' of the first loop');
         for (var j = 0; j < cardNames.length; j++) {
 
             var card = {
@@ -50,110 +49,162 @@ function createDeck() {
                 default:
                     card.value = 10;
             }
-            console.log(card);
             newDeck.push(card);
         }
     }
     return(newDeck);
 }
 
-
-
-  function getScore(cardArray) {
-    var score = 0;
-    var hasAce = false;
-    for (var i = 0; i < cardArray.length; i++) {
-      var card = cardArray[i];
-      console.log('cardArray[i]',cardArray[i]);
-      console.log('card',card);
-      score += card.value;
-      if (card.name === "ace") {
-        hasAce = true;
-      }
-    }
-    if (hasAce && score + 10 <= 21) {
-      return score + 10;
-    }
-    return score;
-  }
-
-  function updateScores() {
-    dealerScore = getScore(dealer.cards);
-    playerScore = getScore(playerCards);
-  }
-
-  function checkForEndOfGame() {
-
-    updateScores();
-
-    if (gameOver) {
-      // Lets the dealer take cards
-      while (dealerScore < playerScore
-          && playerScore <= 21
-          && dealerScore <= 21) {
-        dealerCards.push(getNextCard());
-        updateScores();
-      }
-    }
-    if (playerScore > 21) {
-      playerWon = false;
-      gameOver = true;
-    }
-    else if (dealerScore > 21) {
+  function manageGameEnd() {
+  // This function ONLY handles end-of-game cases
+  if (gameOver) {
+  
+  // Trivial end-of-game cases
+    
+    if (player.score === 21 && dealer.score < 21) {
       playerWon = true;
-      gameOver = true;
+      player.finalScore = player.score;
+      dealer.finalScore = dealer.score;
+      return;
+    }// Player wins
+
+    if (dealer.score === 21 && player.score < 21) {
+      playerWon = false;
+      player.finalScore = player.score;
+      dealer.finalScore = dealer.score;
+      return;
+    }// Dealer wins
+    
+    if (player.score > dealer.score) {
+      playerWon = true;
     }
-    else if (gameOver) {
-      if (playerScore > dealerScore) {
-        playerWon = true;
+    else if (player.score === dealer.score) {
+      push = true;
       }
-      else {
+    else {
+      playerWon = false;
+    }
+    return;
+    }
+
+  //Conditions that should end the game before the dealer finishes playing his hand
+
+    else { 
+      if (player.score > 21) {
         playerWon = false;
-      }
+        gameOver = true;
+        player.finalScore = player.score;
+        dealer.finalScore = dealer.score;
+        return;
+      }// Dealer wins
+      
+      if (dealer.score > 21) {
+        playerWon = true;
+        gameOver = true;
+        player.finalScore = player.score;
+        dealer.finalScore = dealer.score;
+        return;
+      }// Player wins
+
+  // More complex end-of-game cases
+
+      if (player.score === 21 && 
+        player.cards.length === 2 && 
+        dealer.score === 21 && 
+        dealer.cards.length > 2) {
+          playerWon = true;
+          gameOver = true;
+          blackjack = true;
+          player.finalScore = player.score;
+          dealer.finalScore = dealer.score;
+          return;
+      }// Player wins
+
+      if (player.score === 21 && 
+        player.cards.length === 2 && 
+        dealer.score < 21) {
+          playerWon = true;
+          gameOver = true;
+          blackjack = true;
+          player.finalScore = player.score;
+          dealer.finalScore = dealer.score;
+          return;
+      }// Player wins
+
+      if (dealer.score === 21 && 
+        dealer.cards.length === 2 && 
+        player.score === 21 && 
+        player.cards.length > 2) {
+          playerWon = false;
+          gameOver = true;
+          blackjack = true;
+          player.finalScore = player.score;
+          dealer.finalScore = dealer.score;
+          return;
+      }// Dealer wins
     }
   }
-
-  // displays the modal
-  $('#myModal').modal('show');
 
   function showStatus() {
+
     if (!gameStarted) {
       textArea.innerText = "Welcome to Blackjack!";
       return;
     }
 
     var dealerCardString = "";
-    for (var i = 0; i < dealer.cards.length; i++) {
-      dealerCardString += dealer.cards[i].title + "\n";
+    if (player.status === "stay") {
+      for (var i = 0; i < dealer.cards.length; i++) {
+        dealerCardString += dealer.cards[i].title + "\n";
+      }
+    }
+    else {
+      dealerCardString += dealer.cards[0].title + "\n";
     }
 
     var playerCardString = "";
-    for (var i = 0; i < playerCards.length; i++) {
-      playerCardString += playerCards[i].title + "\n";
+    for (var i = 0; i < player.cards.length; i++) {
+      playerCardString += player.cards[i].title + "\n";
     }
-
-    updateScores();
 
     textArea.innerText =
       "Dealer has:\n" +
       dealerCardString +
-      "(score: " + dealerScore + ")\n\n" +
+      "(score: " + dealer.score + ")\n\n" +
 
       "Player has: \n" +
       playerCardString +
-      "(score: " + playerScore + ")\n\n";
+      "(score: " + player.score + ")\n\n";
 
       if (gameOver) {
         if (playerWon) {
           textArea.innerText += "You win!";
         }
+        else if (push) {
+          textArea.innerText += "Player and Dealer push. No one wins.";
+        }
         else {
           textArea.innerText += "You lose. Dealer wins";
         }
-        newGameButton.style.display = "none";
-        hitButton.style.display = "inline";
-        stayButton.style.display = "inline";
+        setTimeout(function() {resetGame();}, 5000);
       }
+  }
+
+  function resetGame() {
+    player.cards = [];
+    dealer.cards = [];
+
+    player.score = 0;
+    dealer.score = 0;
+
+    player.status = "";
+    newGameButtonProperty.style.display = "inline";
+    hitButtonProperty.style.display = "none";
+    stayButtonProperty.style.display = "none";
+
+    gameOver = false;
+    gameStarted = false;
+    showStatus();
   }
 
 // Card variables
@@ -162,9 +213,12 @@ var cardNames = ["ace", "king", "queen", "jack", "ten", "nine", "eight", "seven"
 
 // DOM variables
 var textArea = document.getElementById("text-area");
-var newGameButton = document.getElementById("new-game-button");
-var hitButton = document.getElementById("hit-button");
-var stayButton = document.getElementById("stay-button");
+var newGameButton = "#new-game-button";
+var hitButton = "#hit-button";
+var stayButton = "#stay-button";
+var newGameButtonProperty = document.getElementById('new-game-button');
+var hitButtonProperty = document.getElementById('hit-button');
+var stayButtonProperty = document.getElementById('stay-button');
 var playerOneHand = document.getElementById("player-1");
 var playerTwoHand = document.getElementById("player-2");
 var playerThreeHand = document.getElementById("player-3");
@@ -173,11 +227,14 @@ var playerThreeHand = document.getElementById("player-3");
 var gameStarted = false;
 var gameOver = false;
 var playerWon = false;
+var blackjack = true;
+var push = false;
 
-var playerCards = [];
-var playerScore = 0;
 var deck = [];
 var decks = [];
+var players = [];
+
+var stayCount = 0;
 
 // Initialize Firebase DB
 var config = {
@@ -197,8 +254,9 @@ var database = firebase.database();
 var dealer = {
 
     score: 0,
-
+    hasAce: false,
     cards: [],
+    finalScore: 0,
 
     shuffleDeck: function (deck) {
         for (var i = 0; i < deck.length; i++) {
@@ -211,42 +269,145 @@ var dealer = {
     
     getNextCard:  function () {
         return deck.shift();
+      },
+
+    dealCards: function () {
+      player.cards = [this.getNextCard(),this.getNextCard()];
+      this.cards = [this.getNextCard(), this.getNextCard()];
+    },
+
+    playHand: function () {
+        // Lets the dealer take cards
+        while (dealer.score < 17) {
+          dealer.cards.push(this.getNextCard());
+          dealer.updateDealerScore();
+          console.log('after playing hand, dealer score is ',dealer.score);
+          manageGameEnd();
+          showStatus();
+        }
+        gameOver = true;
+        showStatus();
+    },
+
+    revealCard: function () {
+      // Reset the image path to the one associated with the dealer's hidden card
+      showStatus();
+    },
+
+    updateDealerScore: function () {
+      if (player.status === "stay") {
+        this.score = 0;
+        for (var i = 0; i < this.cards.length; i++) {
+          if (this.cards[i].name === "ace") {
+            this.score += this.cards[i].value[0];
+            this.hasAce = true;
+          }
+          else {
+            this.score += this.cards[i].value;
+          }
+        }
+          if (this.hasAce && this.score + 10 <= 21) {
+            return this.score + 10;
+          }
+          return this.score;
+        }
+      else {
+        this.score = 0;
+        if (this.cards[0].name === "ace") {
+          this.score += this.cards[0].value[0];
+        }
+        else {
+          this.score += this.cards[0].value;
+        }
       }
+  }
 }
 
-hitButton.style.display = "none";
-stayButton.style.display = "none";
+var player = {
+  
+  score: 0,
+  finalScore: 0,
+  cards: [],
+  hasAce: false,
+  numberOfPlayers: [],
+  status: "",
 
-showStatus();
+  hitMe: function () {
+    this.cards.push(dealer.getNextCard());
+  },
 
-//Click listener for New Game Button
-newGameButton.addEventListener("click", function() {
+  updatePlayerScore: function () {
+
+    if (this.status === "stay") {
+      return this.score
+    }
+    else {
+      this.score = 0; 
+      for (var i = 0; i < this.cards.length; i++) {
+        if (this.cards[i].name === "ace") {
+        this.score += this.cards[i].value[0];
+        console.log('player score is ',this.score);
+        this.hasAce = true;
+        }
+        else {
+          this.score += this.cards[i].value;
+          console.log('player score is ',this.score);
+        }
+      }
+        if (this.hasAce && this.score + 10 <= 21) {
+          this.score += 10;
+          console.log('player score is ',this.score);
+          return this.score
+        }
+      return this.score;
+    }
+  }
+}
+
+$(document).ready(function() {
+// Main section of code 
+  hitButtonProperty.style.display = "none";
+  stayButtonProperty.style.display = "none";
+  textArea.innerText = "Welcome to Blackjack!";
+  deck = createDeck();
+
+  //Click listener for New Game Button
+  $('body').on("click", newGameButton, function(event) {
+    event.preventDefault();  
     gameStarted = true;
-    gameOver = false;
-    playerWon = false;
-
-    deck = createDeck();
 
     dealer.shuffleDeck(deck);
-    dealer.cards = [dealer.getNextCard(), dealer.getNextCard()];
-    playerCards = [dealer.getNextCard(), dealer.getNextCard()];
+    dealer.dealCards();
+    console.log('dealer hand ', dealer.cards);
+    
+    newGameButtonProperty.style.display = "none";
+    hitButtonProperty.style.display = "inline";
+    stayButtonProperty.style.display = "inline";
 
-    newGameButton.style.display = "none";
-    hitButton.style.display = "inline";
-    stayButton.style.display = "inline";
+    player.updatePlayerScore();
+    dealer.updateDealerScore();
+    manageGameEnd();
     showStatus();
-  });
+    });
 
   // Click listener for Hit Button
-    hitButton.addEventListener("click", function() {
-    playerCards.push(dealer.getNextCard());
-    checkForEndOfGame();
+  $('body').on("click", hitButton, function(event) {
+    event.preventDefault();
+    player.hitMe();
+    player.updatePlayerScore();
+    manageGameEnd();
     showStatus();
-  });
+    });
 
   // Click listener for Stay Button
-  stayButton.addEventListener("click", function() {
-    gameOver = true;
-    checkForEndOfGame();
+  $('body').on("click", stayButton, function(event) {
+    event.preventDefault();
+    player.status = "stay";
+    dealer.revealCard();
+    dealer.updateDealerScore();
+    manageGameEnd();
     showStatus();
+    console.log('after player stays the dealer score is ', dealer.score);
+    dealer.playHand();
+    });
   });
