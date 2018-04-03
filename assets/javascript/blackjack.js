@@ -58,9 +58,9 @@ function createDeck() {
   function manageGameEnd() {
   // This function ONLY handles end-of-game cases
   if (gameOver) {
-  
+
   // Trivial end-of-game cases
-    
+
     if (player.score === 21 && dealer.score < 21) {
       playerWon = true;
       player.finalScore = player.score;
@@ -74,7 +74,7 @@ function createDeck() {
       dealer.finalScore = dealer.score;
       return;
     }// Dealer wins
-    
+
     if (player.score > dealer.score) {
       playerWon = true;
     }
@@ -89,7 +89,7 @@ function createDeck() {
 
   //Conditions that should end the game before the dealer finishes playing his hand
 
-    else { 
+    else {
       if (player.score > 21) {
         playerWon = false;
         gameOver = true;
@@ -97,7 +97,7 @@ function createDeck() {
         dealer.finalScore = dealer.score;
         return;
       }// Dealer wins
-      
+
       if (dealer.score > 21) {
         playerWon = true;
         gameOver = true;
@@ -108,9 +108,9 @@ function createDeck() {
 
   // More complex end-of-game cases
 
-      if (player.score === 21 && 
-        player.cards.length === 2 && 
-        dealer.score === 21 && 
+      if (player.score === 21 &&
+        player.cards.length === 2 &&
+        dealer.score === 21 &&
         dealer.cards.length > 2) {
           playerWon = true;
           gameOver = true;
@@ -120,8 +120,8 @@ function createDeck() {
           return;
       }// Player wins
 
-      if (player.score === 21 && 
-        player.cards.length === 2 && 
+      if (player.score === 21 &&
+        player.cards.length === 2 &&
         dealer.score < 21) {
           playerWon = true;
           gameOver = true;
@@ -131,9 +131,9 @@ function createDeck() {
           return;
       }// Player wins
 
-      if (dealer.score === 21 && 
-        dealer.cards.length === 2 && 
-        player.score === 21 && 
+      if (dealer.score === 21 &&
+        dealer.cards.length === 2 &&
+        player.score === 21 &&
         player.cards.length > 2) {
           playerWon = false;
           gameOver = true;
@@ -247,7 +247,7 @@ var config = {
   };
   firebase.initializeApp(config);
 
-// Database variable 
+// Database variable
 var database = firebase.database();
 
 // Dealer Concept
@@ -266,7 +266,7 @@ var dealer = {
           deck[i] = temp;
         }
       },
-    
+
     getNextCard:  function () {
         return deck.shift();
       },
@@ -324,7 +324,7 @@ var dealer = {
 }
 
 var player = {
-  
+
   score: 0,
   finalScore: 0,
   cards: [],
@@ -342,7 +342,7 @@ var player = {
       return this.score
     }
     else {
-      this.score = 0; 
+      this.score = 0;
       for (var i = 0; i < this.cards.length; i++) {
         if (this.cards[i].name === "ace") {
         this.score += this.cards[i].value[0];
@@ -365,21 +365,24 @@ var player = {
 }
 
 $(document).ready(function() {
-// Main section of code 
+// Main section of code
   hitButtonProperty.style.display = "none";
   stayButtonProperty.style.display = "none";
   textArea.innerText = "Welcome to Blackjack!";
   deck = createDeck();
 
+  // displays the modal
+  $('#myModal').modal('show');
+
   //Click listener for New Game Button
   $('body').on("click", newGameButton, function(event) {
-    event.preventDefault();  
+    event.preventDefault();
     gameStarted = true;
 
     dealer.shuffleDeck(deck);
     dealer.dealCards();
     console.log('dealer hand ', dealer.cards);
-    
+
     newGameButtonProperty.style.display = "none";
     hitButtonProperty.style.display = "inline";
     stayButtonProperty.style.display = "inline";

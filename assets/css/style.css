@@ -91,3 +91,29 @@ align-items: center;  */
 .modal-header {
 	color: black;
 }
+
+/* .text-center {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+} */
+
+/* .modal-title {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+} */
+
+.modal-body {
+	color: black;
+}
+
+.modal-header {
+	color: black;
+  margin: 0 auto;
+}
+
+.login-image {
+  width: 200px;
+  height: 200px;
+}
