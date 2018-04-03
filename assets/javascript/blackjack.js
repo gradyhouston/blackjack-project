@@ -253,7 +253,7 @@ var config = {
   firebase.initializeApp(config);
 
 
-// Database variables 
+// Database variables
 
 var database = firebase.database();
 var deck = [];
@@ -283,7 +283,7 @@ var dealer = {
         deck[i] = temp;
       }
     },
-  
+
   getNextCard:  function () {
       return deck.shift();
     },
@@ -391,6 +391,10 @@ $(document).ready(function() {
 
   // displays the modal
   $('#myModal').modal('show');
+
+  var playButton = document.getElementById("#play-button");
+
+  
 
   //Click listener for New Game Button
   $('body').on("click", newGameButton, function(event) {
