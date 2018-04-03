@@ -55,7 +55,7 @@ function createDeck() {
     return(newDeck);
 }
 
-  function manageGameEnd() {
+  function manageGameResults() {
   // This function ONLY handles end-of-game cases
   if (gameOver) {
   
@@ -207,6 +207,13 @@ function createDeck() {
     showStatus();
   }
 
+  function saveGameData() {
+    var playerName = player.screenName;
+    table.players.push(playerName);
+    tableID = database.ref('table').push(table).key;
+    console.log(tableID);
+  }
+
 // Card variables
 var suits = ["Hearts", "Clubs", "Diamonds", "Spades"];
 var cardNames = ["ace", "king", "queen", "jack", "ten", "nine", "eight", "seven", "six", "five", "four", "three", "two"];
@@ -230,10 +237,8 @@ var playerWon = false;
 var blackjack = true;
 var push = false;
 
-var deck = [];
-var decks = [];
-var players = [];
 
+var decks = [];
 var stayCount = 0;
 
 // Initialize Firebase DB
@@ -247,96 +252,105 @@ var config = {
   };
   firebase.initializeApp(config);
 
-// Database variable 
+// Database variables 
 var database = firebase.database();
+var deck = [];
+
+// Table Concept
+var table = {
+  gameDeck: [],
+  uniqueID: "",
+  minBet: 25,
+  players: []
+};
 
 // Dealer Concept
 var dealer = {
 
-    score: 0,
-    hasAce: false,
-    cards: [],
-    finalScore: 0,
+  score: 0,
+  hasAce: false,
+  cards: [],
+  finalScore: 0,
 
-    shuffleDeck: function (deck) {
-        for (var i = 0; i < deck.length; i++) {
-          var shuffle = Math.trunc(Math.random() * deck.length);
-          var temp = deck[shuffle];
-          deck[shuffle] = deck[i];
-          deck[i] = temp;
-        }
-      },
-    
-    getNextCard:  function () {
-        return deck.shift();
-      },
-
-    dealCards: function () {
-      player.cards = [this.getNextCard(),this.getNextCard()];
-      this.cards = [this.getNextCard(), this.getNextCard()];
+  shuffleDeck: function (deck) {
+      for (var i = 0; i < deck.length; i++) {
+        var shuffle = Math.trunc(Math.random() * deck.length);
+        var temp = deck[shuffle];
+        deck[shuffle] = deck[i];
+        deck[i] = temp;
+      }
+    },
+  
+  getNextCard:  function () {
+      return deck.shift();
     },
 
-    playHand: function () {
-        // Lets the dealer take cards
-        while (dealer.score < 17) {
-          dealer.cards.push(this.getNextCard());
-          dealer.updateDealerScore();
-          console.log('after playing hand, dealer score is ',dealer.score);
-          manageGameEnd();
-          showStatus();
-        }
-        gameOver = true;
+  dealCards: function () {
+    player.cards = [this.getNextCard(),this.getNextCard()];
+    this.cards = [this.getNextCard(), this.getNextCard()];
+  },
+
+  playHand: function () {
+      // Lets the dealer take cards
+      while (dealer.score < 17) {
+        dealer.cards.push(this.getNextCard());
+        dealer.updateDealerScore();
+        console.log('after playing hand, dealer score is ',dealer.score);
+        manageGameResults();
         showStatus();
-    },
-
-    revealCard: function () {
-      // Reset the image path to the one associated with the dealer's hidden card
+      }
+      gameOver = true;
       showStatus();
-    },
+  },
 
-    updateDealerScore: function () {
-      if (player.status === "stay") {
-        this.score = 0;
-        for (var i = 0; i < this.cards.length; i++) {
-          if (this.cards[i].name === "ace") {
-            this.score += this.cards[i].value[0];
-            this.hasAce = true;
-          }
-          else {
-            this.score += this.cards[i].value;
-          }
-        }
-          if (this.hasAce && this.score + 10 <= 21) {
-            return this.score + 10;
-          }
-          return this.score;
-        }
-      else {
-        this.score = 0;
-        if (this.cards[0].name === "ace") {
-          this.score += this.cards[0].value[0];
+  revealCard: function () {
+    // Reset the image path to the one associated with the dealer's hidden card
+    showStatus();
+  },
+
+  updateDealerScore: function () {
+    if (player.status === "stay") {
+      this.score = 0;
+      for (var i = 0; i < this.cards.length; i++) {
+        if (this.cards[i].name === "ace") {
+          this.score += this.cards[i].value[0];
+          this.hasAce = true;
         }
         else {
-          this.score += this.cards[0].value;
+          this.score += this.cards[i].value;
         }
       }
+        if (this.hasAce && this.score + 10 <= 21) {
+          return this.score + 10;
+        }
+        return this.score;
+      }
+    else {
+      this.score = 0;
+      if (this.cards[0].name === "ace") {
+        this.score += this.cards[0].value[0];
+      }
+      else {
+        this.score += this.cards[0].value;
+      }
+    }
   }
 }
 
 var player = {
   
   score: 0,
-  finalScore: 0,
   cards: [],
   hasAce: false,
-  numberOfPlayers: [],
   status: "",
+  screenName: "Pocket Rockets",
+  chipCount: 100,
 
-  hitMe: function () {
+  hitMe: function() {
     this.cards.push(dealer.getNextCard());
   },
 
-  updatePlayerScore: function () {
+  updatePlayerScore: function() {
 
     if (this.status === "stay") {
       return this.score
@@ -370,6 +384,7 @@ $(document).ready(function() {
   stayButtonProperty.style.display = "none";
   textArea.innerText = "Welcome to Blackjack!";
   deck = createDeck();
+  table.gameDeck = deck;
 
   //Click listener for New Game Button
   $('body').on("click", newGameButton, function(event) {
@@ -378,7 +393,7 @@ $(document).ready(function() {
 
     dealer.shuffleDeck(deck);
     dealer.dealCards();
-    console.log('dealer hand ', dealer.cards);
+    
     
     newGameButtonProperty.style.display = "none";
     hitButtonProperty.style.display = "inline";
@@ -386,7 +401,8 @@ $(document).ready(function() {
 
     player.updatePlayerScore();
     dealer.updateDealerScore();
-    manageGameEnd();
+    manageGameResults();
+    saveGameData();
     showStatus();
     });
 
@@ -395,7 +411,7 @@ $(document).ready(function() {
     event.preventDefault();
     player.hitMe();
     player.updatePlayerScore();
-    manageGameEnd();
+    manageGameResults();
     showStatus();
     });
 
@@ -405,7 +421,7 @@ $(document).ready(function() {
     player.status = "stay";
     dealer.revealCard();
     dealer.updateDealerScore();
-    manageGameEnd();
+    manageGameResults();
     showStatus();
     console.log('after player stays the dealer score is ', dealer.score);
     dealer.playHand();
