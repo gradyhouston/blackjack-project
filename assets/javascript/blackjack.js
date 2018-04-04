@@ -392,11 +392,11 @@ $(document).ready(function() {
   // displays the modal
   $('#myModal').modal('show');
 
-  var playButton = document.getElementById("#play-button");
+  var playButton = $("#play-button");
   var nameField = $("#name-field");
 
 
-  $("body").on("click", playButton, function(event) {
+  $(playButton).on("click", function(event) {
     console.log(nameField.val());
   })
 
