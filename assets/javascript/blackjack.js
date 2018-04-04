@@ -346,7 +346,7 @@ var player = {
   cards: [],
   hasAce: false,
   status: "",
-  screenName: "Pocket Rockets",
+  screenName: "Grady",
   chipCount: 100,
 
   hitMe: function() {
@@ -398,6 +398,7 @@ $(document).ready(function() {
 
   $(playButton).on("click", function(event) {
     console.log(nameField.val());
+    table.players.push(nameField.val());
   })
 
   //Click listener for New Game Button
