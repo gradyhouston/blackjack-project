@@ -208,8 +208,6 @@ function createDeck() {
   }
 
   function saveGameData() {
-    var playerName = player.screenName;
-    table.players.push(playerName);
     tableID = database.ref('table').push(table).key;
     console.log(tableID);
   }
@@ -346,7 +344,6 @@ var player = {
   cards: [],
   hasAce: false,
   status: "",
-  screenName: "Grady",
   chipCount: 100,
 
   hitMe: function() {
@@ -356,6 +353,7 @@ var player = {
   updatePlayerScore: function() {
 
     if (this.status === "stay") {
+
       return this.score
     }
     else {
@@ -398,7 +396,12 @@ $(document).ready(function() {
 
   $(playButton).on("click", function(event) {
     console.log(nameField.val());
-    table.players.push(nameField.val());
+    var playerData = {
+      username: nameField.val(),
+      score: 0,
+      wins: 0
+    }
+    table.players.push(playerData);
   })
 
   //Click listener for New Game Button
