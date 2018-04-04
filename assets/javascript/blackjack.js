@@ -393,8 +393,12 @@ $(document).ready(function() {
   $('#myModal').modal('show');
 
   var playButton = document.getElementById("#play-button");
+  var nameField = $("#name-field");
 
-  
+
+  $("body").on("click", playButton, function(event) {
+    console.log(nameField.val());
+  })
 
   //Click listener for New Game Button
   $('body').on("click", newGameButton, function(event) {
