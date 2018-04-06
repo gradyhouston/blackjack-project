@@ -186,7 +186,6 @@ function showStatus() {
       }
       // Check if the user has won the game
       if (gameOver) {
-        $("#game-message").html("<p>Play again?</p>");
         $("#restart").show();
       }
     }
