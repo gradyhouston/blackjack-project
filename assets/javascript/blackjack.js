@@ -57,7 +57,7 @@ function createDeck() {
 
 function manageGameResults() {
 // Trivial end-of-game cases
-  if (gameOver) { 
+  if (gameOver) {
     if (player.score === 21 && dealer.score < 21) {
       playerWon = true;
       table.players[0].wins++;
@@ -90,9 +90,9 @@ function manageGameResults() {
       gameOver = true;
       return;
     }
-  } 
+  }
 //Conditions that should end the game before the dealer finishes playing his hand
-   
+
   if (player.score > 21) {
     playerWon = false;
     gameOver = true;
@@ -184,7 +184,11 @@ function showStatus() {
       else {
         textArea.innerText += "You lose. Dealer wins";
       }
-      setTimeout(function() {resetGame();}, 5000);
+      // Check if the user has won the game
+      if (gameOver) {
+        $("#game-message").html("<p>Play again?</p>");
+        $("#restart").show();
+      }
     }
 }
 
@@ -203,6 +207,7 @@ function resetGame() {
   gameOver = false;
   gameStarted = false;
   showStatus();
+
 }
 
 function saveGameData() {
@@ -217,7 +222,7 @@ function updateGameData() {
     score: table.players[0].score,
     wins: table.players[0].wins
   });
-  
+
   database.ref('table/' + tableID).update({
     dealerScore: table.dealerScore,
     dealerHand: table.dealerHand
@@ -232,7 +237,7 @@ function addNewPlayer(playerObject) {
 function createGameTable() {
   if (table.players.length > 3) {
     console.log('the players array has ',table.players.length, ' people so the if clause ran');
-    //If there are more than three people in the players array, dynamically build the player's buttons for the first 
+    //If there are more than three people in the players array, dynamically build the player's buttons for the first
     //three players to arrive at the table
     for (var i = 0; i < 3; i++) {
       var player = "player-" + i;
@@ -260,7 +265,7 @@ function createGameTable() {
   }
   else {
     console.log('the players array has ',table.players.length, ' people so the else clause ran');
-    
+
     //If there are 1-3 people in the players array, dynamically build the player's buttons for everyone in the array
     for (var i = 0; i < table.players.length; i++) {
       var player = "#player-" + i;
@@ -483,6 +488,9 @@ $(document).ready(function() {
   // displays the modal
   $('#myModal').modal('show');
 
+  // Hide the "Restart" button on document load
+  $("#restart").hide();
+
   var playButton = $("#play-button");
   var nameField = $("#name-field");
 
@@ -555,4 +563,11 @@ $('body').on("click", stayButton, function(event) {
       updateGameData();
     }
   });
+
+  $("#restart").on("click", function() {
+    console.log("Restart selected");
+
+    resetGame();
+  });
+
 });
