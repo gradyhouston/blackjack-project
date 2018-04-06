@@ -234,7 +234,7 @@ var cardNames = ["ace", "king", "queen", "jack", "ten", "nine", "eight", "seven"
 // DOM variables
 var textArea = document.getElementById("text-area");
 var newGameButton = "#new-game-button";
-var hitButton = "#hit-button";
+var hitButton;
 var stayButton = "#stay-button";
 var newGameButtonProperty = document.getElementById('new-game-button');
 var hitButtonProperty = document.getElementById('hit-button');
@@ -242,6 +242,8 @@ var stayButtonProperty = document.getElementById('stay-button');
 var playerOneHand = document.getElementById("player-1");
 var playerTwoHand = document.getElementById("player-2");
 var playerThreeHand = document.getElementById("player-3");
+var idString = "";
+var btnString;
 
 // Game variables
 var gameStarted = false;
@@ -437,6 +439,20 @@ $(document).ready(function() {
       wins: 0
     }
     table.players.push(playerData);
+
+
+    var hitButtonProperty = document.getElementById('hit-button');
+    idString = playerData.username + "-" + "hit" + "-" + "button";
+    hitButton = idString;
+    hitButtonHtml = $("<button id=" + idString + ">");
+    console.log(idString);
+    $("#player-1-buttons").prepend(hitButtonHtml).attr("id",idString);
+    console.log(hitButtonHtml);
+    btnString = "#" + idString;
+    hitButtonHtml.html("Hit!");
+    hitButtonHtml.attr(idString);
+    console.log(btnString, "ksdjv;kwjf");
+
     if (table.players.length === 1) {
       console.log('saving player data');
       tableID = saveGameData();
@@ -446,6 +462,7 @@ $(document).ready(function() {
     }
     deck = createDeck();
     table.gameDeck = deck;
+
   });
 
   //Click listener for New Game Button
@@ -471,12 +488,15 @@ $(document).ready(function() {
   // Click listener for Hit Button
   $('body').on("click", hitButton, function(event) {
     event.preventDefault();
-    player.hitMe();
-    player.updatePlayerScore();
-    manageGameResults();
-    updateGameData();
-    showStatus();
-    });
+
+    if (event.target.id === idString) {
+      player.hitMe();
+      player.updatePlayerScore();
+      manageGameResults();
+      updateGameData();
+      showStatus();
+    }
+  });
 
   // Click listener for Stay Button
   $('body').on("click", stayButton, function(event) {

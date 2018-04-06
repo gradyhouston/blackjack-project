@@ -6,6 +6,7 @@ body {
   -moz-background-size: cover;
   background-size: cover;
   -o-background-size: cover;
+  overflow: hidden;
 
 }
 
@@ -75,6 +76,48 @@ align-items: center;  */
   margin-left: -15px;
   display: flex;
   justify-content: space-around;
+}
+
+#player1-hit-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+}
+
+#player1-stay-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-left: 1em;
+}
+
+#player2-hit-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+}
+
+#player2-stay-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-left: 1em;
+}
+
+#player3-hit-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+}
+
+#player3-stay-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-left: 1em;
 }
 
 .modal-body {
