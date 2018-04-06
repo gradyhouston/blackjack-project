@@ -38,13 +38,13 @@ border: 20px solid #fff;
 display: flex;
 justify-content: center;
 flex-direction: column;
-align-items: center;  
+align-items: center;
 }
 
 .flex-container{
   padding: 0;
   margin: 0;
-  list-style: none; 
+  list-style: none;
 }
 
 * {
@@ -166,4 +166,13 @@ align-items: center;
 
 .hit-buttons {
   margin-right: 5px;
+}
+
+.playAgainBtn {
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  background-color: #29a645;
+  margin: auto;
+  margin-top: -350px;
 }
