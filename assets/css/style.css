@@ -38,13 +38,13 @@ border: 20px solid #fff;
 display: flex;
 justify-content: center;
 flex-direction: column;
-align-items: center;  */
+align-items: center;  
 }
 
 .flex-container{
   padding: 0;
   margin: 0;
-  list-style: none; */
+  list-style: none; 
 }
 
 * {
@@ -162,4 +162,8 @@ align-items: center;  */
 
 .link-part {
   margin-bottom: 10px;
+}
+
+.hit-buttons {
+  margin-right: 5px;
 }

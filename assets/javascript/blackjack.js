@@ -213,18 +213,79 @@ function saveGameData() {
 
 function updateGameData() {
   database.ref('table/' + tableID + '/players/0').update({
+    playerHand: table.players[0].playerHand,
     score: table.players[0].score,
     wins: table.players[0].wins
   });
   
   database.ref('table/' + tableID).update({
-    dealerScore: table.dealerScore
+    dealerScore: table.dealerScore,
+    dealerHand: table.dealerHand
   });
 
 }
 
 function addNewPlayer(playerObject) {
   database.ref('table/' + tableID + '/players/').update(playerObject);
+}
+
+function createGameTable() {
+  if (table.players.length > 3) {
+    console.log('the players array has ',table.players.length, ' people so the if clause ran');
+    //If there are more than three people in the players array, dynamically build the player's buttons for the first 
+    //three players to arrive at the table
+    for (var i = 0; i < 3; i++) {
+      var player = "player-" + i;
+      $(player).html(table.players[i].username);
+
+      hitIdString = table.players[i].username + "-" + "hit" + "-" + "button";
+      hitButton = hitIdString;
+      var hitButtonHTML = $("<button id=" + hitIdString + " class='hit-buttons'>");
+      var playerButtons = "#player-" + i + "-buttons";
+      $(playerButtons).empty();
+      $(playerButtons).append(hitButtonHTML);
+      hitButtonHTML.html("Hit!");
+      hitButtonProperty = document.getElementById(hitButton);
+      hitButtonProperty.style.display = "inline";
+
+      stayIdString = table.players[i].username + "-" + "stay" + "-" + "button";
+      stayButton = stayIdString;
+      var stayButtonHTML = $("<button id=" + stayIdString + ">");
+      var playerButtons = "#player-" + i + "-buttons";
+      $(playerButtons).append(stayButtonHTML);
+      stayButtonHTML.html("Stay!");
+      stayButtonProperty = document.getElementById(stayButton);
+      stayButtonProperty.style.display = "inline";
+    }
+  }
+  else {
+    console.log('the players array has ',table.players.length, ' people so the else clause ran');
+    
+    //If there are 1-3 people in the players array, dynamically build the player's buttons for everyone in the array
+    for (var i = 0; i < table.players.length; i++) {
+      var player = "#player-" + i;
+      $(player).html(table.players[i].username);
+
+      hitIdString = table.players[i].username + "-" + "hit" + "-" + "button";
+      hitButton = hitIdString;
+      var hitButtonHTML = $("<button id=" + hitIdString + " class='hit-buttons'>");
+      var playerButtons = "#player-" + i + "-buttons";
+      $(playerButtons).empty();
+      $(playerButtons).append(hitButtonHTML);
+      hitButtonHTML.html("Hit!");
+      hitButtonProperty = document.getElementById(hitButton);
+      //hitButtonProperty.style.display = "inline";
+
+      stayIdString = table.players[i].username + "-" + "stay" + "-" + "button";
+      stayButton = stayIdString;
+      var stayButtonHTML = $("<button id=" + stayIdString + ">");
+      var playerButtons = "#player-" + i + "-buttons";
+      $(playerButtons).append(stayButtonHTML);
+      stayButtonHTML.html("Stay!");
+      stayButtonProperty = document.getElementById(stayButton);
+      stayButtonProperty.style.display = "inline";
+    }
+  }
 }
 
 // Card variables
@@ -235,15 +296,15 @@ var cardNames = ["ace", "king", "queen", "jack", "ten", "nine", "eight", "seven"
 var textArea = document.getElementById("text-area");
 var newGameButton = "#new-game-button";
 var hitButton;
-var stayButton = "#stay-button";
+var stayButton;
 var newGameButtonProperty = document.getElementById('new-game-button');
-var hitButtonProperty = document.getElementById('hit-button');
-var stayButtonProperty = document.getElementById('stay-button');
+var hitButtonProperty;
+var stayButtonProperty;
 var playerOneHand = document.getElementById("player-1");
 var playerTwoHand = document.getElementById("player-2");
 var playerThreeHand = document.getElementById("player-3");
-var idString = "";
-var btnString;
+var hitIdString = "";
+var stayIdString = "";
 
 // Game variables
 var gameStarted = false;
@@ -288,8 +349,6 @@ console.log('the dealer has', table.dealerHand);
 
 // Dealer Concept
 var dealer = {
-
-
   score: 0,
   hasAce: false,
   cards: [],
@@ -372,7 +431,6 @@ var dealer = {
 }
 
 var player = {
-
   score: 0,
   cards: [],
   hasAce: false,
@@ -391,6 +449,7 @@ var player = {
     }
     else {
       this.score = 0;
+      this.hasAce = false;
       for (var i = 0; i < this.cards.length; i++) {
         if (this.cards[i].name === "ace") {
         this.score += this.cards[i].value[0];
@@ -417,8 +476,6 @@ var player = {
 
 $(document).ready(function() {
 // Main section of code
-  hitButtonProperty.style.display = "none";
-  stayButtonProperty.style.display = "none";
   textArea.innerText = "Welcome to Blackjack!";
   //deck = createDeck();
   //table.gameDeck = deck;
@@ -440,20 +497,7 @@ $(document).ready(function() {
     }
     table.players.push(playerData);
 
-
-    var hitButtonProperty = document.getElementById('hit-button');
-    idString = playerData.username + "-" + "hit" + "-" + "button";
-    hitButton = idString;
-    hitButtonHtml = $("<button id=" + idString + ">");
-    console.log(idString);
-    $("#player-1-buttons").prepend(hitButtonHtml).attr("id",idString);
-    console.log(hitButtonHtml);
-    btnString = "#" + idString;
-    hitButtonHtml.html("Hit!");
-    hitButtonHtml.attr(idString);
-    console.log(btnString, "ksdjv;kwjf");
-
-    if (table.players.length === 1) {
+    if (tableID === "") {
       console.log('saving player data');
       tableID = saveGameData();
     }
@@ -473,9 +517,9 @@ $(document).ready(function() {
 
     dealer.shuffleDeck(deck);
     dealer.dealCards();
+    createGameTable();
 
     newGameButtonProperty.style.display = "none";
-    hitButtonProperty.style.display = "inline";
     stayButtonProperty.style.display = "inline";
 
     player.updatePlayerScore();
@@ -488,8 +532,7 @@ $(document).ready(function() {
   // Click listener for Hit Button
   $('body').on("click", hitButton, function(event) {
     event.preventDefault();
-
-    if (event.target.id === idString) {
+    if (event.target.id === hitIdString) {
       player.hitMe();
       player.updatePlayerScore();
       manageGameResults();
@@ -498,16 +541,18 @@ $(document).ready(function() {
     }
   });
 
-  // Click listener for Stay Button
-  $('body').on("click", stayButton, function(event) {
-    event.preventDefault();
-    player.status = "stay";
-    dealer.revealCard();
-    dealer.updateDealerScore();
-    manageGameResults();
-    updateGameData();
-    showStatus();
-    console.log('after player stays the dealer score is ', dealer.score);
-    dealer.playHand();
-    });
+// Click listener for Stay Button
+$('body').on("click", stayButton, function(event) {
+  event.preventDefault();
+    if (event.target.id === stayIdString) {
+      player.status = "stay";
+      dealer.revealCard();
+      dealer.updateDealerScore();
+      manageGameResults();
+      showStatus();
+      console.log('after player stays the dealer score is ', dealer.score);
+      dealer.playHand();
+      updateGameData();
+    }
   });
+});
