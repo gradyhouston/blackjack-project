@@ -15,7 +15,7 @@ function createDeck() {
 
         card.name = cardNames[j];
         card.suit = suits[i];
-        card.image = "../images/" + suits[i] + "/" + cardNames[j];
+        card.image = "../images/" + suits[i] + "/" + cardNames[j] + ".png";
         card.title = cardNames[j] + " of " + suits[i];
 
         switch(cardNames[j]) {
@@ -30,7 +30,7 @@ function createDeck() {
                 break;
             case "four":
                 card.value = 4;
-                break;
+                break;""
             case "five":
                 card.value = 5;
                 break;
@@ -145,18 +145,21 @@ function manageGameResults() {
 
 function showStatus() {
 
-  if (!gameStarted) {
-    textArea.innerText = "Welcome to Blackjack!";
-    return;
-  }
+  // if (!gameStarted) {
+  //   textArea.innerText = "Welcome to Blackjack!";
+  //   return;
+  // }
 
   var dealerCardString = "";
+  console.log('player status then is ', player.status);
   if (player.status === "stay") {
+    console.log('player status now is ', player.status);
     for (var i = 0; i < dealer.cards.length; i++) {
       dealerCardString += dealer.cards[i].title + "\n";
     }
   }
   else {
+    // If the players haven't all 
     dealerCardString += dealer.cards[0].title + "\n";
   }
 
@@ -196,13 +199,11 @@ function resetGame() {
   dealer.score = 0;
 
   player.status = "";
-  newGameButtonProperty.style.display = "inline";
   hitButtonProperty.style.display = "none";
   stayButtonProperty.style.display = "none";
 
   gameOver = false;
   gameStarted = false;
-  showStatus();
 }
 
 function saveGameData() {
@@ -289,7 +290,7 @@ function createGameTable() {
 }
 
 // Card variables
-var suits = ["Hearts", "Clubs", "Diamonds", "Spades"];
+var suits = ["hearts", "clubs", "diamonds", "spades"];
 var cardNames = ["ace", "king", "queen", "jack", "ten", "nine", "eight", "seven", "six", "five", "four", "three", "two"];
 
 // DOM variables
@@ -485,49 +486,56 @@ $(document).ready(function() {
 
   var playButton = $("#play-button");
   var nameField = $("#name-field");
-
+  console.log('saving player data');
+  deck = createDeck();
+  table.gameDeck = deck;
+  tableID = saveGameData();
 
   $(playButton).on("click", function(event) {
-    console.log(nameField.val());
     var playerData = {
       playerHand: [],
       username: nameField.val(),
       score: 0,
       wins: 0
     }
+    addNewPlayer(playerData);
     table.players.push(playerData);
-
-    if (tableID === "") {
-      console.log('saving player data');
-      tableID = saveGameData();
-    }
-    else if (table.players.length > 1 && table.players.length <= 3) {
-      addNewPlayer(playerData);
-    }
-    deck = createDeck();
-    table.gameDeck = deck;
-
-  });
-
-  //Click listener for New Game Button
-  $('body').on("click", newGameButton, function(event) {
-    event.preventDefault();
-    gameStarted = true;
-    gameOver = false;
-
     dealer.shuffleDeck(deck);
     dealer.dealCards();
+    gameStarted = true;
+    gameOver = false;  
     createGameTable();
-
-    newGameButtonProperty.style.display = "none";
-    stayButtonProperty.style.display = "inline";
-
     player.updatePlayerScore();
     dealer.updateDealerScore();
     manageGameResults();
     updateGameData();
     showStatus();
-    });
+    // newGameButtonProperty.style.display = "none";
+    // stayButtonProperty.style.display = "inline";
+  });
+
+//Click listener for New Game Button
+// $(newGameButton).on("click", function(event) {
+//   event.preventDefault();
+//   if (event.target.id === newGameButton) {
+    
+//     gameStarted = true;
+//     gameOver = false;
+
+//     dealer.shuffleDeck(deck);
+//     dealer.dealCards();
+//     createGameTable();
+
+//     newGameButtonProperty.style.display = "none";
+//     stayButtonProperty.style.display = "inline";
+
+//     player.updatePlayerScore();
+//     dealer.updateDealerScore();
+//     manageGameResults();
+//     updateGameData();
+//     showStatus();
+//   }
+// });
 
   // Click listener for Hit Button
   $('body').on("click", hitButton, function(event) {
