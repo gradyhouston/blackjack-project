@@ -15,7 +15,7 @@ function createDeck() {
 
         card.name = cardNames[j];
         card.suit = suits[i];
-        card.image = "../images/" + suits[i] + "/" + cardNames[j] + ".png";
+        card.image = "assets/images/" + suits[i] + "/" + cardNames[j] + ".png";
         card.title = cardNames[j] + " of " + suits[i];
 
         switch(cardNames[j]) {
@@ -163,35 +163,33 @@ function showStatus() {
     dealerCardString += dealer.cards[0].title + "\n";
   }
 
-  var playerCardString = "";
-  for (var i = 0; i < player.cards.length; i++) {
-    playerCardString += player.cards[i].title + "\n";
-  }
+  // var playerCardString = "";
+  // for (var i = 0; i < player.cards.length; i++) {
+  //   playerCardString += player.cards[i].title + "\n";
+  // }
 
   textArea.innerText =
-    "Dealer has:\n" +
-    dealerCardString +
-    "(score: " + dealer.score + ")\n\n" +
+  "Dealer has:\n" +
+  dealerCardString +
+  "(score: " + dealer.score + ")\n\n";
 
-    "Player has: \n" +
-    playerCardString +
-    "(score: " + player.score + ")\n\n";
+  // "Player has: \n" +
+  // playerCardString +
+  // "(score: " + player.score + ")\n\n";
 
-    if (gameOver) {
-      if (playerWon) {
-        textArea.innerText += "You win!";
-      }
-      else if (push) {
-        textArea.innerText += "Player and Dealer push. No one wins.";
-      }
-      else {
-        textArea.innerText += "You lose. Dealer wins";
-      }
-      // Check if the user has won the game
-      if (gameOver) {
-        $("#restart").show();
-      }
+  if (gameOver) {
+    $("#restart").show();
+    if (playerWon) {
+      textArea.innerText += "You win!";
     }
+    else if (push) {
+      textArea.innerText += "Player and Dealer push. No one wins.";
+    }
+    else {
+      textArea.innerText += "You lose. Dealer wins";
+    }
+    // Check if the user has won the game
+  }
 }
 
 function resetGame() {
@@ -207,7 +205,6 @@ function resetGame() {
 
   gameOver = false;
   gameStarted = false;
-
 }
 
 function saveGameData() {
@@ -217,11 +214,11 @@ function saveGameData() {
 }
 
 function updateGameData() {
-  database.ref('table/' + tableID + '/players/0').update({
+  database.ref('table/' + tableID + '/players/').set([{
     playerHand: table.players[0].playerHand,
     score: table.players[0].score,
     wins: table.players[0].wins
-  });
+  }]);
 
   database.ref('table/' + tableID).update({
     dealerScore: table.dealerScore,
@@ -293,6 +290,34 @@ function createGameTable() {
   }
 }
 
+function displayCards() {
+    database.ref('table/' + tableID + '/players').on("value", function(snapshot) {
+    //console.log(snapshot.val());
+    var players = snapshot.val();
+    console.log(typeof players);
+    console.log('players array contains ',players);
+    console.log('players array length is ', players.length);
+    for (var i = 0; i < players.length; i++) {
+      var cardDisplayParent = "#player-" + i + "-card-display";
+      $(cardDisplayParent).empty();
+      for (var j = 0; j <  players[i].playerHand.length; j++) {
+        console.log('in here');
+        console.log('img path ',j,' ',players[i].playerHand[j].image);
+        var imgPath = players[i].playerHand[j].image;
+        var cardImgHTML = $("<img src=" + imgPath + " height='106' width='76'>");
+        console.log(cardDisplayParent);
+        $(cardDisplayParent).append(cardImgHTML);
+      }
+    }
+  });
+}
+
+function clearTable(player1, player2, player3) {
+  player1.empty();
+  player2.empty();
+  player3.empty();
+}
+
 // Card variables
 var suits = ["hearts", "clubs", "diamonds", "spades"];
 var cardNames = ["ace", "king", "queen", "jack", "ten", "nine", "eight", "seven", "six", "five", "four", "three", "two"];
@@ -310,6 +335,9 @@ var playerTwoHand = document.getElementById("player-2");
 var playerThreeHand = document.getElementById("player-3");
 var hitIdString = "";
 var stayIdString = "";
+var player0cards = $("#player-0-card-display");
+var player1cards = $("#player-1-card-display");
+var player2cards = $("#player-2-card-display");
 
 // Game variables
 var gameStarted = false;
@@ -517,32 +545,8 @@ $(document).ready(function() {
     manageGameResults();
     updateGameData();
     showStatus();
-    // newGameButtonProperty.style.display = "none";
-    // stayButtonProperty.style.display = "inline";
+    displayCards();
   });
-
-//Click listener for New Game Button
-// $(newGameButton).on("click", function(event) {
-//   event.preventDefault();
-//   if (event.target.id === newGameButton) {
-    
-//     gameStarted = true;
-//     gameOver = false;
-
-//     dealer.shuffleDeck(deck);
-//     dealer.dealCards();
-//     createGameTable();
-
-//     newGameButtonProperty.style.display = "none";
-//     stayButtonProperty.style.display = "inline";
-
-//     player.updatePlayerScore();
-//     dealer.updateDealerScore();
-//     manageGameResults();
-//     updateGameData();
-//     showStatus();
-//   }
-// });
 
   // Click listener for Hit Button
   $('body').on("click", hitButton, function(event) {
@@ -552,6 +556,7 @@ $(document).ready(function() {
       player.updatePlayerScore();
       manageGameResults();
       updateGameData();
+      displayCards();
       showStatus();
     }
   });
@@ -568,13 +573,14 @@ $('body').on("click", stayButton, function(event) {
       console.log('after player stays the dealer score is ', dealer.score);
       dealer.playHand();
       updateGameData();
+      displayCards();
     }
   });
 
   $("#restart").on("click", function() {
     console.log("Restart selected");
-
     resetGame();
+    clearTable(player0cards,player1cards,player2cards);
   });
 
 });
