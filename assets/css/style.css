@@ -76,6 +76,7 @@ align-items: center;
   margin-left: -15px;
   display: flex;
   justify-content: space-around;
+  margin-top: -50px;
 }
 
 #player1-hit-button {
@@ -225,7 +226,7 @@ align-items: center;
   vertical-align: middle;
   background-color: #29a645;
   margin: auto;
-  margin-top: -550px;
+  margin-top: -500px;
   /* margin-bottom: 5px; */
 }
 
