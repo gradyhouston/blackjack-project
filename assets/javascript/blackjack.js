@@ -520,17 +520,63 @@ $(document).ready(function() {
   keyboard: false
 })
 
+
+  $("#playerName").validate({
+    rules: {
+      nameField: {
+        required: true,
+        minlength: 3
+      },
+      name: "required"
+    },
+    messages: {
+      nameField: {
+        required: "You must type in a name to play",
+        minlength: "You must input at least 3 characters"
+      },
+    }
+  });
+
+
+// $('#name-field').validate({
+//         framework: 'bootstrap4',
+//         fields: {
+//             username: {
+//                 validators: {
+//                     notEmpty: {
+//         message: 'The name is required'
+//         },
+//         stringLength: {
+//         min: 6,
+//         max: 30,
+//         message: 'The name must be more than 3 and less than 30 characters long'
+//         },
+//           regexp: {
+//             regexp: /^[a-zA-Z0-9_]+$/,
+//             message: 'The name can only consist of alphabetical, number and underscore'
+//           }
+//         }
+//       }
+//     }
+//   })
+
   // Hide the "Restart" button on document load
   $("#restart").hide();
 
   var playButton = $("#play-button");
-  var nameField = $("#name-field");
+  var nameField = $("#nameField");
   console.log('saving player data');
   deck = createDeck();
   table.gameDeck = deck;
   tableID = saveGameData();
 
   $(playButton).on("click", function(event) {
+    console.log($("#playerName"));
+    var valid = $("#playerName").valid();
+    if (!valid) {
+      return false;
+      console.log("invalid");
+    }
     var playerData = {
       playerHand: [],
       username: nameField.val(),
