@@ -253,7 +253,8 @@ function createGameTable() {
       stayIdString = table.players[i].username + "-" + "stay" + "-" + "button";
       stayButton = stayIdString;
       var stayButtonHTML = $("<button id=" + stayIdString + ">");
-      var playerButtons = "#player-" + i + "-buttons";
+      stayButtonHTML.attr("class", "stay-buttons");
+      playerButtons = "#player-" + i + "-buttons";
       $(playerButtons).append(stayButtonHTML);
       stayButtonHTML.html("Stay!");
       stayButtonProperty = document.getElementById(stayButton);
@@ -281,6 +282,7 @@ function createGameTable() {
       stayIdString = table.players[i].username + "-" + "stay" + "-" + "button";
       stayButton = stayIdString;
       var stayButtonHTML = $("<button id=" + stayIdString + ">");
+      stayButtonHTML.attr("class", "stay-buttons");
       var playerButtons = "#player-" + i + "-buttons";
       $(playerButtons).append(stayButtonHTML);
       stayButtonHTML.html("Stay!");
@@ -304,7 +306,7 @@ function displayCards() {
         console.log('in here');
         console.log('img path ',j,' ',players[i].playerHand[j].image);
         var imgPath = players[i].playerHand[j].image;
-        var cardImgHTML = $("<img src=" + imgPath + " height='106' width='76'>");
+        var cardImgHTML = $("<img src=" + imgPath + " height='146' width='106'>");
         console.log(cardDisplayParent);
         $(cardDisplayParent).append(cardImgHTML);
       }
