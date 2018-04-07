@@ -253,7 +253,8 @@ function createGameTable() {
       stayIdString = table.players[i].username + "-" + "stay" + "-" + "button";
       stayButton = stayIdString;
       var stayButtonHTML = $("<button id=" + stayIdString + ">");
-      var playerButtons = "#player-" + i + "-buttons";
+      stayButtonHTML.attr("class", "stay-buttons");
+      playerButtons = "#player-" + i + "-buttons";
       $(playerButtons).append(stayButtonHTML);
       stayButtonHTML.html("Stay!");
       stayButtonProperty = document.getElementById(stayButton);
@@ -281,6 +282,7 @@ function createGameTable() {
       stayIdString = table.players[i].username + "-" + "stay" + "-" + "button";
       stayButton = stayIdString;
       var stayButtonHTML = $("<button id=" + stayIdString + ">");
+      stayButtonHTML.attr("class", "stay-buttons");
       var playerButtons = "#player-" + i + "-buttons";
       $(playerButtons).append(stayButtonHTML);
       stayButtonHTML.html("Stay!");
@@ -304,13 +306,44 @@ function displayCards() {
         console.log('in here');
         console.log('img path ',j,' ',players[i].playerHand[j].image);
         var imgPath = players[i].playerHand[j].image;
-        var cardImgHTML = $("<img src=" + imgPath + " height='106' width='76'>");
+        var cardImgHTML = $("<img src=" + imgPath + " height='146' width='106'>");
+        cardImgHTML.attr("class", "playerImg");
         console.log(cardDisplayParent);
         $(cardDisplayParent).append(cardImgHTML);
       }
     }
   });
 }
+
+// function displayDealerCards() {
+//     database.ref('table/' + tableID + '/dealerHand').on("value", function(snapshot) {
+//     //console.log(snapshot.val());
+//     var players = snapshot.val();
+//     console.log(typeof players);
+//     console.log('players array contains ',players);
+//     console.log('players array length is ', players.length);
+//       for (var j = 0; j < players.length; j++) { // players here is actually the dealer because of the snapshot reference
+//         if (j === 0) {
+//           var cardDisplayParent = "#dealer-card-display";
+//           $(cardDisplayParent).empty();
+//           console.log('in here');
+//           var imgPath = "assets/images/cardbacks/cardbackred.png";
+//           var cardImgHTML = $("<img src=" + imgPath + " height='146' width='106'>");
+//           console.log(cardDisplayParent);
+//           $(cardDisplayParent).append(cardImgHTML);
+//         } else {
+//           var cardDisplayParent = "#dealer-card-display";
+//           $(cardDisplayParent).empty();
+//           console.log('in here');
+//           console.log('img path ',j,' ',players[j].image);
+//           var imgPath = players[j].image;
+//           var cardImgHTML = $("<img src=" + imgPath + " height='146' width='106'>");
+//           console.log(cardDisplayParent);
+//           $(cardDisplayParent).append(cardImgHTML);
+//         }
+//       }
+//     });
+//   }
 
 function clearTable(player1, player2, player3) {
   player1.empty();
@@ -596,6 +629,7 @@ $(document).ready(function() {
     updateGameData();
     showStatus();
     displayCards();
+    // displayDealerCards();
   });
 
   // Click listener for Hit Button
@@ -627,10 +661,10 @@ $('body').on("click", stayButton, function(event) {
     }
   });
 
-  $("#restart").on("click", function() {
-    console.log("Restart selected");
-    resetGame();
-    clearTable(player0cards,player1cards,player2cards);
-  });
+  // $("#restart").on("click", function() {
+  //   console.log("Restart selected");
+  //   resetGame();
+  //   clearTable(player0cards,player1cards,player2cards);
+  // });
 
 });
