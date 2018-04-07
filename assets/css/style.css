@@ -176,3 +176,10 @@ align-items: center;
   margin: auto;
   margin-top: -350px;
 }
+
+.required {
+  font-size: 8px;
+  color: red;
+  margin-left: -225px;
+  margin-top: -10px;
+}
