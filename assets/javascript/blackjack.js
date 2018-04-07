@@ -159,7 +159,7 @@ function showStatus() {
     }
   }
   else {
-    // If the players haven't all 
+    // If the players haven't all
     dealerCardString += dealer.cards[0].title + "\n";
   }
 
@@ -514,7 +514,11 @@ $(document).ready(function() {
   //table.gameDeck = deck;
 
   // displays the modal
-  $('#myModal').modal('show');
+  // $('#myModal').modal('show');
+  $('#myModal').modal({
+  backdrop: 'static',
+  keyboard: false
+})
 
   // Hide the "Restart" button on document load
   $("#restart").hide();
@@ -538,7 +542,7 @@ $(document).ready(function() {
     dealer.shuffleDeck(deck);
     dealer.dealCards();
     gameStarted = true;
-    gameOver = false;  
+    gameOver = false;
     createGameTable();
     player.updatePlayerScore();
     dealer.updateDealerScore();

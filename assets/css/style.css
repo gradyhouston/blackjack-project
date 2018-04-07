@@ -6,7 +6,7 @@ body {
   -moz-background-size: cover;
   background-size: cover;
   -o-background-size: cover;
-  /* overflow: hidden; */
+  overflow-x: hidden;
 
 }
 
@@ -175,4 +175,11 @@ align-items: center;
   background-color: #29a645;
   margin: auto;
   margin-top: -350px;
+}
+
+.required {
+  font-size: 8px;
+  color: red;
+  margin-left: -225px;
+  margin-top: -10px;
 }
