@@ -226,6 +226,7 @@ align-items: center;
   background-color: #29a645;
   margin: auto;
   margin-top: -550px;
+  /* margin-bottom: 5px; */
 }
 
 .playerImg {
