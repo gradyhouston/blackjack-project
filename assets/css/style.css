@@ -156,9 +156,18 @@ align-items: center;
   border-radius: .3rem;
 }
 
-.modal {
-  left: 165px;
+.main-section {
+  /* padding: 0 !important; */
+   /* margin: 0 !important; */
+  margin: auto;
 }
+
+
+/* .modal {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+} */
 
 .link-part {
   margin-bottom: 10px;
